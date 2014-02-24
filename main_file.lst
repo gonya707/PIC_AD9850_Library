@@ -1,0 +1,100 @@
+CCS PCM C Compiler, Version 4.140, 21101               16-Oct-13 15:46
+
+               Filename:   C:\Users\GONZALO\Desktop\asdf\main_file.lst
+
+               ROM used:   25 words (0%)
+                           Largest free fragment is 2048
+               RAM used:   5 (1%) at main() level
+                           5 (1%) worst case
+               Stack:     1 locations
+
+*
+0000:  MOVLW  00
+0001:  MOVWF  0A
+0002:  GOTO   00B
+0003:  NOP
+.................... //change your MCU 
+.................... #include <16f877.h> 
+.................... //////// Standard Header file for the PIC16F877 device //////////////// 
+.................... #device PIC16F877 
+.................... #list 
+....................  
+.................... #include "CCSPIC_AD9850.h" 
+.................... /*   Library for PIC16F877 and compatible devices. 
+....................  * 
+....................  *    This library contains several functions for using with a DDS generator 
+....................  *    AD9850 module. All the functions are intended to work with this device 
+....................  *    in SERIAL mode, so you need to connect the parallel pins D0 and D1 to VCC 
+....................  *    and D2 GND, as written in the AD9850 datasheet. For further information 
+....................  *    check the Analog Devices website. 
+....................  * 
+....................  *    Coded by Gonzalo Recio 
+....................  */ 
+....................  
+.................... #ifndef CCSPIC_AD9850_H 
+....................     #define CCSPIC_AD9850_H 
+....................  
+....................    //Interchangeable pins 
+....................    #define W_CLK  PIN_B0  
+....................    #define FQ_UD  PIN_B1   
+....................    #define DATA   PIN_B2  
+....................    #define RESET  PIN_B3  
+....................  
+....................    //Frequency of your crystal oscillator (CLKIN input pin 9 in datasheet), measured in MHz 
+....................    // This reference frequency must be higher than 1MHz. 
+....................    #define XTAL_MHZ 125 
+....................  
+....................    //Relationship value between actual frequency and 32-bit word sent in the serial streaming 
+....................    #define FREQ_FACTOR 4294.967295 
+....................  
+....................    //function prototypes 
+....................       void AD9850_Init(void); 
+....................       void AD9850_Reset(void); 
+....................       void AD9850_Osc(double frequency, double phase); 
+....................       void AD9850_Sweep_Up(double minFreq, double maxFreq, double inc, int cyclesPerDelay); 
+....................       void AD9850_Sweep_Down(double minFreq, double maxFreq, double inc, int cyclesPerDelay); 
+....................       void AD9850_Sweep_Loop(double minFreq, double maxFreq, double inc, int cyclesPerDelay); 
+....................       void AD9850_PowerDown(void); 
+....................        
+....................       void AD9850_Init(void){ 
+....................    output_low(W_CLK|FQ_UD|DATA|RESET); 
+0004:  BSF    03.5
+0005:  BCF    06.3
+0006:  BCF    03.5
+0007:  BCF    06.3
+.................... } 
+0008:  BCF    0A.3
+0009:  BCF    0A.4
+000A:  GOTO   018 (RETURN)
+....................  
+.................... #endif 
+....................  
+.................... // 4MHz clock 
+.................... #use delay(clock=4000000) 
+....................  
+.................... void main(){ 
+000B:  CLRF   04
+000C:  BCF    03.7
+000D:  MOVLW  1F
+000E:  ANDWF  03,F
+000F:  BSF    03.5
+0010:  BSF    1F.0
+0011:  BSF    1F.1
+0012:  BSF    1F.2
+0013:  BCF    1F.3
+....................  
+....................     set_tris_b(W_CLK|FQ_UD|DATA|RESET); 
+0014:  MOVLW  33
+0015:  MOVWF  06
+....................     
+....................    AD9850_Init(); 
+0016:  BCF    03.5
+0017:  GOTO   004
+....................    //AD9850_Reset(); 
+....................    //AD9850_Osc(1234, 0); 
+....................  
+.................... } 
+0018:  SLEEP
+
+Configuration Fuses:
+   Word  1: 3F73   RC NOWDT PUT BROWNOUT NOLVP NOCPD NOWRT NODEBUG NOPROTECT
